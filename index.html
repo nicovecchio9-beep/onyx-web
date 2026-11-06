@@ -1,48 +1,299 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ONYX · iPhone Rosario</title>
-  <meta name="description" content="ONYX iPhone Rosario: iPhone nuevos y usados premium, MacBook, iPad, Apple Watch y AirPods. Stock en tiempo real, precios en dólares y pesos, cuotas con tarjeta.">
-  <style>
-    body { margin:0; background:#0a0a0a; color:#f2f1ec; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; box-sizing:border-box; }
-    .marca b { display:block; font-size:26px; letter-spacing:10px; font-weight:500; }
-    .marca span { font-size:11px; letter-spacing:2px; color:#8f8d86; }
-    .msg { margin-top:18px; color:#8f8d86; font-size:14px; }
-    .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:#25D366; margin-right:6px; animation:p 1s infinite alternate; }
-    @keyframes p { to { opacity:.2 } }
-    a { color:#f2f1ec; }
-    .btn { display:inline-block; margin:8px 6px 0; padding:10px 16px; border-radius:10px; background:#f2f1ec; color:#0a0a0a; text-decoration:none; font-weight:600; }
-    .btn.wa { background:#25D366; color:#06301a; }
-    </style>
-  </head>
-  <body>
-    <div>
-      <div class="marca"><b>ONYX</b><span>IPHONE ROSARIO</span></div>
-    <div class="msg" id="msg"><span class="dot"></span>Cargando el stock…</div>
-    </div>
-  <script>
-    (async function () {
-      var API = 'https://script.google.com/macros/s/AKfycbzLbCzyHHSR6wIEAGpDNRX6TwDiBs9YXFqJlwxoyMUe-HijnMV-677IX8ZbM7CS5ho/exec';
-      var q = location.search ? location.search.slice(1) + '&' : '';
-      try {
-        var r = await fetch(API + '?' + q + 'api=pagina&t=' + Date.now());
-        var h = await r.text();
-        if (!/<html/i.test(h)) throw new Error('respuesta inválida');
-        var doc = new DOMParser().parseFromString(h, 'text/html');
-        document.replaceChild(document.adoptNode(doc.documentElement), document.documentElement);
-        document.querySelectorAll('script').forEach(function (o) {
-          var s = document.createElement('script');
-          s.textContent = '(function(){\n' + o.textContent + '\n})();';
-          o.replaceWith(s);
-        });
-      } catch (err) {
-        document.getElementById('msg').innerHTML = 'No pudimos cargar el stock en este momento.<br>' +
-          '<a class="btn" href="javascript:location.reload()">Reintentar</a>' +
-          '<a class="btn wa" href="https://wa.me/5493416832874?text=' + encodeURIComponent('Hola! Vengo de la web de ONYX.') + '">Escribinos por WhatsApp</a>';
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ONYX · iPhone Rosario</title>
+<meta name="description" content="ONYX iPhone Rosario: lista de precios al día de iPhone nuevos y usados premium, MacBook, iPad, Apple Watch y AirPods. Garantía de por vida certificada, cuotas con tarjeta.">
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '28419773657634850');
+fbq('track', 'PageView');
+document.addEventListener('click', function (e) {
+  var a = e.target && e.target.closest && e.target.closest('a[href*="wa.me"]');
+  if (a) fbq('track', 'Contact');
+}, true);
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=28419773657634850&ev=PageView&noscript=1"></noscript>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap">
+<style>
+  :root { --ink:#111; --mut:#666; --lt:#999; --line:#eee; --bg:#fff; --soft:#f5f4f0; --wa:#25D366; --ok:#1a8f3c; }
+  * { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif; }
+  a { color:inherit; text-decoration:none; }
+  button { font:inherit; color:inherit; background:none; border:0; padding:0; cursor:pointer; }
+  .wrap { max-width:560px; margin:0 auto; padding:0 20px 150px; }
+  header { display:flex; align-items:center; justify-content:space-between; padding:18px 0 0; }
+  header img { width:48px; height:48px; border-radius:12px; display:block; }
+  .live { font-size:11px; font-weight:600; color:var(--ok); display:flex; align-items:center; gap:6px; }
+  .live i { width:8px; height:8px; border-radius:50%; background:var(--ok); display:inline-block; animation:p 1.2s infinite alternate; }
+  @keyframes p { to { opacity:.25 } }
+  h1 { margin:22px 0 0; font-size:44px; font-weight:900; line-height:.95; letter-spacing:-2px; }
+  .sub { margin:10px 0 0; font-size:13px; color:var(--mut); }
+  nav.tabs { display:flex; gap:0; margin-top:18px; border-bottom:2px solid var(--ink); overflow-x:auto; scrollbar-width:none; }
+  nav.tabs::-webkit-scrollbar { display:none; }
+  .tab { padding:10px 14px; font-size:14px; color:#888; white-space:nowrap; margin-bottom:-2px; border-bottom:3px solid transparent; }
+  .tab:first-child { padding-left:0; }
+  .tab.on { color:var(--ink); font-weight:700; border-bottom-color:var(--ink); }
+  .seguro { margin-top:14px; width:100%; display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:12px; background:var(--ink); color:#fff; text-align:left; }
+  .seguro small { display:block; font-size:10px; letter-spacing:2px; font-weight:700; color:#9ccc65; }
+  .seguro b { display:block; font-size:14px; margin-top:2px; }
+  .seguro span { display:block; font-size:11px; color:#bbb; margin-top:2px; }
+  .nota { margin-top:14px; font-size:12px; color:var(--mut); line-height:1.5; }
+  .nota span + span::before { content:" · "; }
+  .chips { display:flex; gap:6px; margin-top:12px; overflow-x:auto; scrollbar-width:none; }
+  .chips::-webkit-scrollbar { display:none; }
+  .chip { padding:7px 12px; border-radius:8px; border:1px solid #ddd; font-size:12px; color:var(--mut); white-space:nowrap; }
+  .chip.on { border-color:var(--ink); color:var(--ink); font-weight:600; }
+  .sec { padding:20px 0 6px; font-size:11px; font-weight:700; letter-spacing:2px; color:var(--lt); text-transform:uppercase; }
+  .it { width:100%; display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); text-align:left; }
+  .ph { width:48px; height:48px; border-radius:10px; background:#f0f0f0; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#bbb; overflow:hidden; }
+  .ph img { width:100%; height:100%; object-fit:cover; display:block; }
+  .tx { flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
+  .tx b { font-size:15px; font-weight:600; }
+  .tx b em { font-style:normal; font-weight:400; color:var(--mut); }
+  .tx span { font-size:12px; color:var(--mut); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .dot { width:9px; height:9px; border-radius:50%; display:inline-block; border:1px solid rgba(0,0,0,.12); }
+  .pr { display:flex; flex-direction:column; align-items:flex-end; flex-shrink:0; }
+  .pr b { font-size:20px; font-weight:900; letter-spacing:-.5px; line-height:1; }
+  .pr b small { font-size:11px; font-weight:600; color:var(--lt); letter-spacing:0; margin-right:3px; }
+  .pr span { font-size:10px; color:#888; margin-top:3px; }
+  .pr .cons { font-size:11px; font-weight:600; color:var(--ok); border:1px solid var(--ok); padding:5px 9px; border-radius:8px; }
+  .igual { margin-top:18px; padding:16px; border-radius:14px; background:var(--soft); }
+  .igual b { display:block; font-size:16px; font-weight:900; letter-spacing:-.3px; }
+  .igual p { margin:4px 0 0; font-size:13px; color:#444; }
+  .igual small { display:block; margin-top:6px; font-size:10px; color:var(--lt); line-height:1.4; }
+  .vacio { padding:30px 0; color:var(--lt); font-size:13px; text-align:center; }
+  footer { margin-top:28px; font-size:12px; color:var(--lt); display:flex; justify-content:space-between; align-items:center; }
+  footer a { text-decoration:underline; }
+  .fixed { position:fixed; left:0; right:0; bottom:0; padding:10px 20px calc(16px + env(safe-area-inset-bottom)); background:linear-gradient(180deg, rgba(255,255,255,0) 0%, #fff 30%); }
+  .nico { max-width:520px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:12px 12px 12px 16px; border-radius:14px; background:var(--ink); color:#fff; box-shadow:0 8px 24px rgba(0,0,0,.18); }
+  .nico b { display:block; font-size:14px; }
+  .nico span { display:block; font-size:12px; color:#bbb; margin-top:2px; }
+  .nico i { width:40px; height:40px; border-radius:50%; background:var(--wa); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:10px; }
+  /* sheets */
+  .ov { position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:flex-end; justify-content:center; z-index:50; }
+  .ov.on { display:flex; }
+  .sh { width:100%; max-width:560px; max-height:88vh; overflow:auto; background:var(--soft); border-radius:24px 24px 0 0; padding:12px 22px calc(22px + env(safe-area-inset-bottom)); }
+  .sh .bar { width:40px; height:4px; border-radius:2px; background:#ccc; margin:0 auto 14px; }
+  .sh h3 { margin:0; font-size:22px; font-weight:800; letter-spacing:-.5px; line-height:1.1; }
+  .sh .k { font-size:10px; letter-spacing:2px; font-weight:800; color:var(--ok); }
+  .card { background:#fff; border:1px solid #e6e4de; border-radius:14px; padding:12px 14px; margin-top:10px; font-size:12px; line-height:1.45; }
+  .card b.t { display:block; font-size:11px; font-weight:800; margin-bottom:6px; }
+  .cols2 { display:flex; gap:10px; margin-top:10px; }
+  .cols2 .card { flex:1; margin-top:0; }
+  .dark { background:var(--ink); color:#fff; border-color:var(--ink); font-size:13px; }
+  .btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; height:50px; border-radius:14px; font-size:14px; font-weight:700; margin-top:12px; }
+  .btn.k { background:var(--ink); color:#fff; }
+  .btn.wa { background:var(--wa); color:#06301a; }
+  .btn.out { border:1px solid var(--ink); }
+  .foto { width:100%; max-height:46vh; object-fit:contain; border-radius:14px; background:#fff; display:block; margin-top:10px; }
+  .cuota { display:flex; justify-content:space-between; align-items:baseline; padding:9px 0; border-top:1px solid #e6e4de; font-size:13px; }
+  .cuota b { font-size:16px; font-weight:800; }
+  .tjs { display:flex; gap:8px; margin:12px 0 6px; font-size:11px; font-weight:800; color:var(--mut); }
+  .tjs span { border:1px solid #ddd; border-radius:6px; padding:3px 8px; background:#fff; }
+  .nos h2 { font-size:28px; font-weight:900; letter-spacing:-1px; margin:22px 0 8px; }
+  .nos p, .nos li { font-size:14px; line-height:1.55; color:#333; }
+  .load { text-align:center; padding:60px 0; color:var(--lt); font-size:13px; }
+  .err { text-align:center; padding:40px 0; color:var(--mut); font-size:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="./"><img id="logo" alt="ONYX iPhone Rosario"></a>
+    <span class="live" id="live"><i></i>Precios al día</span>
+  </header>
+  <div id="app"><div class="load">Cargando el stock…</div></div>
+  <footer id="foot" style="display:none">
+    <span>ONYX · Puerto Norte, Rosario</span>
+    <a href="#" id="nosLink">Quiénes somos</a>
+  </footer>
+</div>
+
+<div class="fixed" id="fix" style="display:none">
+  <a class="nico" id="waNico" target="_blank" rel="noopener">
+    <span><b>¿No encontraste lo que buscás?</b><span>Hablá con Nico, te lo consigue.</span></span>
+    <i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06301a" stroke-width="2.2"><path d="M21 12a9 9 0 0 1-13.4 7.8L3 21l1.3-4.4A9 9 0 1 1 21 12z"/></svg></i>
+  </a>
+</div>
+
+<div class="ov" id="ov"><div class="sh" id="sh"></div></div>
+
+<script>
+(function () {
+  var API = 'https://script.google.com/macros/s/AKfycbzLbCzyHHSR6wIEAGpDNRX6TwDiBs9YXFqJlwxoyMUe-HijnMV-677IX8ZbM7CS5ho/exec';
+  var WA = '5493416832874', REDONDEO = 1000;
+  var LOGO = 'data:image/jpeg;base64,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';
+  var qs = new URLSearchParams(location.search);
+
+  // ---------- Modo admin: página completa de Apps Script ----------
+  if (qs.get('admin')) {
+    fetch(API + '?' + qs.toString() + '&api=pagina&t=' + Date.now()).then(function (r) { return r.text(); }).then(function (h) {
+      if (!/<html/i.test(h)) throw new Error('inválida');
+      var doc = new DOMParser().parseFromString(h, 'text/html');
+      document.replaceChild(document.adoptNode(doc.documentElement), document.documentElement);
+      document.querySelectorAll('script').forEach(function (o) {
+        var s = document.createElement('script'); s.textContent = '(function(){\n' + o.textContent + '\n})();'; o.replaceWith(s);
+      });
+    }).catch(function () { document.getElementById('app').innerHTML = '<div class="err">No pudimos abrir el modo admin.<br><br><button class="btn out" onclick="location.reload()">Reintentar</button></div>'; });
+    return;
+  }
+
+  document.getElementById('logo').src = LOGO;
+  var CATS = [
+    { id: 'usados', nombre: 'Usados' }, { id: 'sellados', nombre: 'Sellados' }, { id: 'macbook', nombre: 'MacBook' },
+    { id: 'watch', nombre: 'Watch' }, { id: 'airpods', nombre: 'AirPods' }, { id: 'ipad', nombre: 'iPad' }, { id: 'consolas', nombre: 'Consolas' }];
+  var NOTAS = {
+    sellados: ['Equipos nuevos', '1 año de garantía Apple oficial', 'Cargador, funda y templado de regalo 🎁'],
+    usados: ['Equipos usados premium', 'Garantía de por vida certificada', 'Cargador, cable, funda y templado de regalo 🎁'],
+    macbook: ['Equipos nuevos', '1 año de garantía Apple oficial'], watch: ['Equipos nuevos', '1 año de garantía Apple oficial'],
+    airpods: ['Equipos nuevos', '1 año de garantía Apple oficial'], ipad: ['Equipos nuevos', '1 año de garantía Apple oficial'],
+    consolas: ['Equipos nuevos', '90 días de garantía'] };
+  var COLORES = { 'space black': '#2b2b2d', 'jet black': '#0b0b0c', 'black titanium': '#3b3b3d', 'black': '#1d1d1f', 'midnight': '#232a35', 'graphite': '#4b4a47',
+    'space gray': '#5c5c60', 'space grey': '#5c5c60', 'white titanium': '#e8e6e1', 'cloud white': '#f4f4f2', 'starlight': '#f0e6d8', 'white': '#f5f5f0', 'silver': '#d9dadc',
+    'natural titanium': '#bab4a9', 'natural': '#bab4a9', 'desert titanium': '#bfa48f', 'desert': '#bfa48f', 'gold': '#e9d3b0', 'light gold': '#e9dcc0',
+    'rose gold': '#e7c3b8', 'pink': '#f2c6d0', 'coral': '#ee7762', 'red': '#c3172d', 'burgundy': '#6e1f2e', 'orange': '#e8742b', 'cosmic orange': '#e8742b', 'yellow': '#f6dc6e',
+    'green': '#a9c8a8', 'alpine green': '#4f5f4b', 'midnight green': '#4e5851', 'sage': '#b5bfa3', 'teal': '#5fa4a5', 'mint': '#bfe3d1',
+    'sierra blue': '#a7c1d9', 'pacific blue': '#2e4a5f', 'blue titanium': '#3f4a58', 'deep blue': '#26334d', 'blue': '#4b7fb8', 'sky blue': '#bcd5e6', 'mist blue': '#b7c7d8',
+    'ultramarine': '#6474d6', 'glacier': '#d8e4ea', 'lavender': '#cbb8e2', 'lavander': '#cbb8e2', 'purple': '#b9a6d3', 'deep purple': '#56475c' };
+
+  var D = null, cat = 'usados', linea = '';
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var fmt = function (n) { return Number(n).toLocaleString('es-AR'); };
+  var pesos = function (n) { return Math.ceil(n * D.dolar / REDONDEO) * REDONDEO; };
+  var gb = function (g) { return /^\d+$/.test(String(g)) ? (g >= 1000 ? g / 1000 + ' TB' : g + ' GB') : g; };
+  var waLink = function (t) { return 'https://wa.me/' + WA + '?text=' + encodeURIComponent(t); };
+  var titleCase = function (s) { return String(s).toLowerCase().replace(/\b\w/g, function (l) { return l.toUpperCase(); }); };
+  function colorHex(c) {
+    var s = String(c).toLowerCase().replace(/\s+/g, ' ').trim();
+    if (COLORES[s]) return COLORES[s];
+    var k = Object.keys(COLORES).filter(function (k) { return s.indexOf(k) >= 0; })[0];
+    return k ? COLORES[k] : '#888';
+  }
+  function titulo(x) {
+    if (x.cat === 'usados') return [x.modelo, gb(x.gb), x.color, x.bat + ' de batería'].join(' ');
+    return [x.modelo, x.detalle ? gb(x.detalle) : '', x.cat === 'sellados' ? 'sellado' : ''].filter(Boolean).join(' ');
+  }
+  function mensaje(x) {
+    if (!x.usd) return 'Hola Nico, ¿cómo estás? Quisiera consultar el precio del ' + titulo(x) + (x.colores ? ' (' + x.colores + ')' : '') + '.';
+    return 'Hola Nico, ¿cómo estás? Quisiera comprar el ' + titulo(x) + ' (US$ ' + fmt(x.usd) + ').' + (x.cat !== 'usados' && x.colores ? ' Colores: ' + x.colores + '.' : '');
+  }
+  function planes() { return Object.keys(D.cuotas || {}).map(Number).filter(function (n) { return n > 0; }).sort(function (a, b) { return a - b; }); }
+  function hayCuotas() { return D.dolar && planes().length > 0; }
+  function delCat(c) {
+    return D.items.filter(function (x) { return x.cat === c; }).sort(function (a, b) { return a.orden - b.orden || (parseFloat(a.gb) || 0) - (parseFloat(b.gb) || 0) || a.usd - b.usd; });
+  }
+  function nombre(x) {
+    var m = String(x.modelo).replace(/^iphone\s*/i, '');
+    if (x.cat === 'usados') return '<b>' + esc(m) + ' <em>· ' + esc(gb(x.gb)) + '</em></b>';
+    return '<b>' + esc(x.modelo) + (x.detalle ? ' <em>· ' + esc(gb(x.detalle)) + '</em>' : '') + '</b>';
+  }
+  function linea2(x) {
+    if (x.cat === 'usados') return '<span><i class="dot" style="background:' + colorHex(x.color) + '"></i>' + esc(x.color) + ' · ' + esc(x.bat) + (x.grado ? ' · ' + esc(x.grado) : '') + '</span>';
+    var cols = String(x.colores || '').split(/\s+-\s+|,|\//).map(function (c) { return c.trim(); }).filter(Boolean);
+    return '<span>' + (cols.length ? cols.map(function (c) { return '<i class="dot" style="background:' + colorHex(c) + '"></i>' + esc(titleCase(c)); }).join('&nbsp;&nbsp;') : 'Nuevo') + '</span>';
+  }
+  function fila(x) {
+    return '<button class="it" data-id="' + esc(x.id) + '">' +
+      '<span class="ph">' + (x.foto ? '<img src="' + esc(x.foto.replace('sz=w1200', 'sz=w200')) + '" loading="lazy" alt="">' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.5"/></svg>') + '</span>' +
+      '<span class="tx">' + nombre(x) + linea2(x) + '</span>' +
+      '<span class="pr">' + (x.usd ? '<b><small>US$</small>' + fmt(x.usd) + '</b>' + (D.dolar ? '<span>$ ' + fmt(pesos(x.usd)) + '</span>' : '') : '<span class="cons">Consultar</span>') + '</span>' +
+    '</button>';
+  }
+  function grupo(items, key, label) {
+    var out = '', last = null;
+    items.forEach(function (x) { var k = key(x); if (k !== last) { out += '<div class="sec">' + esc(label(k)) + '</div>'; last = k; } out += fila(x); });
+    return out;
+  }
+  function pintar() {
+    var vis = CATS.filter(function (c) { return delCat(c.id).length; });
+    if (!vis.some(function (c) { return c.id === cat; }) && vis.length) cat = vis[0].id;
+    var items = delCat(cat).filter(function (x) { return !linea || x.linea === linea; });
+    var lineas = cat === 'usados' ? Array.from(new Set(delCat('usados').map(function (x) { return x.linea; }).filter(Boolean))).sort(function (a, b) { return a - b; }) : [];
+    var h = '<h1>Lista de<br>precios.</h1><p class="sub">Sin vueltas. Lo que ves es lo que hay en stock ahora.</p>' +
+      '<nav class="tabs">' + vis.map(function (c) { return '<button class="tab' + (c.id === cat ? ' on' : '') + '" data-c="' + c.id + '">' + c.nombre + '</button>'; }).join('') + '</nav>';
+    if (cat === 'usados') h += '<button class="seguro" id="seguro"><span><small>COMPRÁ SEGURO</small><b>Garantía de por vida certificada</b><span>Único sitio en Argentina. Tocá para ver qué cubre.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></button>';
+    h += '<div class="nota">' + (NOTAS[cat] || []).map(function (t) { return '<span>' + t + '</span>'; }).join('') + '</div>';
+    if (lineas.length > 1) h += '<div class="chips"><button class="chip' + (!linea ? ' on' : '') + '" data-l="">Todos</button>' + lineas.map(function (l) { return '<button class="chip' + (l === linea ? ' on' : '') + '" data-l="' + l + '">Línea ' + l + '</button>'; }).join('') + '</div>';
+    if (!items.length) h += '<div class="vacio">No hay equipos en esta categoría por ahora.</div>';
+    else if (cat === 'usados') h += grupo(items, function (x) { return x.linea || ''; }, function (k) { return k ? 'iPhone ' + k : 'Otros'; });
+    else {
+      var stock = items.filter(function (x) { return !x.encargue; }), enc = items.filter(function (x) { return x.encargue; });
+      h += enc.length ? (stock.length ? '<div class="sec">Stock · entrega inmediata</div>' + stock.map(fila).join('') : '') + '<div class="sec">Por encargue</div>' + enc.map(fila).join('') : '<div class="sec">Stock</div>' + items.map(fila).join('');
+    }
+    h += '<div class="igual"><b>Igualamos cualquier oferta.</b><p>Si lo viste más barato, mostranos y te lo igualamos.</p><small>* Siempre que cumpla con las mismas condiciones de venta: mismo modelo, estado, batería, garantía y forma de pago.</small></div>';
+    var app = document.getElementById('app');
+    app.innerHTML = h;
+    app.querySelectorAll('.tab').forEach(function (b) { b.onclick = function () { cat = b.dataset.c; linea = ''; pintar(); }; });
+    app.querySelectorAll('.chip').forEach(function (b) { b.onclick = function () { linea = b.dataset.l; pintar(); }; });
+    app.querySelectorAll('.it').forEach(function (b) { b.onclick = function () { abrirItem(b.dataset.id); }; });
+    var sg = document.getElementById('seguro'); if (sg) sg.onclick = abrirGarantia;
+    document.getElementById('foot').style.display = '';
+    document.getElementById('fix').style.display = '';
+    if (D.act) document.getElementById('live').innerHTML = '<i></i>Precios al día · ' + esc(D.act.split(' ').pop());
+  }
+
+  // ---------- Hojas ----------
+  var ov = document.getElementById('ov'), sh = document.getElementById('sh');
+  function abrir(html) { sh.innerHTML = '<div class="bar"></div>' + html; ov.classList.add('on'); sh.scrollTop = 0; sh.querySelectorAll('.cer').forEach(function (b) { b.onclick = cerrar; }); }
+  function cerrar() { ov.classList.remove('on'); }
+  ov.onclick = function (e) { if (e.target === ov) cerrar(); };
+  function abrirItem(id) {
+    var x = D.items.filter(function (i) { return i.id === id; })[0]; if (!x) return;
+    var h = '<h3>' + esc(titulo(x).replace(/ de batería$/, '')) + '</h3>';
+    if (x.foto) h += '<img class="foto" src="' + esc(x.foto) + '" alt="">';
+    if (x.usd) {
+      h += '<div class="card" style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:24px;font-weight:900">US$ ' + fmt(x.usd) + '</b>' + (D.dolar ? '<span>$ ' + fmt(pesos(x.usd)) + ' en pesos</span>' : '') + '</div>';
+      if (hayCuotas()) {
+        var base = pesos(x.usd);
+        h += '<div class="card"><b class="t">FINANCIACIÓN CON TARJETA DE CRÉDITO</b><div class="tjs"><span>VISA</span><span>MASTERCARD</span><span>AMEX</span></div>' +
+          planes().map(function (n) { var c = Math.ceil(base * (1 + Number(D.cuotas[n]) / 100) / n / 100) * 100; return '<div class="cuota"><span>' + n + ' cuotas de</span><b>$ ' + fmt(c) + '</b></div>'; }).join('') + '</div>';
       }
-    })();
-  </script>
-  </body>
+      h += '<a class="btn wa" target="_blank" rel="noopener" href="' + waLink(mensaje(x)) + '">Pedir por WhatsApp</a>';
+    } else {
+      h += '<a class="btn wa" target="_blank" rel="noopener" href="' + waLink(mensaje(x)) + '">Consultar precio por WhatsApp</a>';
+    }
+    h += '<button class="btn out cer">Cerrar</button>';
+    abrir(h);
+  }
+  function abrirGarantia() {
+    abrir('<span class="k">COMPRÁ SEGURO</span><h3>Garantía de por vida certificada</h3>' +
+      '<div class="card dark"><b>El único sitio en Argentina</b> con garantía de por vida certificada en iPhone usados. Te llevás el equipo con un certificado a tu nombre, con modelo, GB, color, batería e IMEI.</div>' +
+      '<div class="cols2"><div class="card"><b class="t" style="color:var(--ok)">✓ CUBRE</b>Fallas de funcionamiento<br>Fallas de software<br>Revisión en nuestro servicio técnico</div>' +
+      '<div class="card"><b class="t" style="color:#b3261e">✕ NO CUBRE</b>Golpes y caídas<br>Agua o líquidos<br>Reparaciones en otros servicios</div></div>' +
+      '<div class="card"><b class="t">INCLUYE CON TU USADO PREMIUM</b>Cargador · Cable · Funda · Templado 🎁<br><span style="color:#888;font-size:10px">Vale para el comprador original mientras tenga el equipo. Cada reclamo pasa por revisión previa de nuestro servicio técnico.</span></div>' +
+      '<button class="btn k cer">Entendido, ver equipos</button>');
+  }
+  function verNos() {
+    document.getElementById('app').innerHTML = '<div class="nos"><button class="btn out" id="volver" style="width:auto;padding:0 16px;height:40px;margin-top:14px">← Volver al stock</button>' +
+      '<h2>Quiénes somos</h2>' +
+      '<p>Somos ONYX, una tienda de productos Apple en Rosario. Vendemos iPhone nuevos y usados premium, MacBook, iPad, Apple Watch y AirPods, y te atendemos de forma personalizada por WhatsApp.</p>' +
+      '<ul><li>Equipos nuevos con 1 año de garantía Apple oficial.</li><li>Usados premium con garantía de por vida certificada.</li><li>Los iPhone incluyen funda, cargador y templado de regalo.</li><li>Pagás en efectivo en dólares o pesos, o con tarjeta de crédito en cuotas.</li></ul>' +
+      '<p>Nuestra oficina está en Puerto Norte, Av. Carballo 186, Rosario.</p></div>';
+    document.getElementById('volver').onclick = function () { pintar(); window.scrollTo(0, 0); };
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('nosLink').onclick = function (e) { e.preventDefault(); verNos(); };
+  document.getElementById('waNico').href = waLink('Hola Nico, ¿cómo estás? No encontré lo que busco en la web, ¿me lo conseguís?');
+
+  // ---------- Datos ----------
+  function cargar(primera) {
+    return fetch(API, { method: 'POST', body: JSON.stringify({ fn: 'getDatos', args: [] }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (j.error || !j.ok || !j.ok.items) throw new Error(j.error || 'datos'); D = j.ok; if (primera || !ov.classList.contains('on')) { if (!document.querySelector('.nos')) pintar(); } })
+      .catch(function () {
+        if (D) return;
+        document.getElementById('app').innerHTML = '<div class="err">No pudimos cargar el stock en este momento.<br><br><button class="btn out" onclick="location.reload()">Reintentar</button>' +
+          '<a class="btn wa" target="_blank" rel="noopener" href="' + waLink('Hola! Vengo de la web de ONYX.') + '">Escribinos por WhatsApp</a></div>';
+      });
+  }
+  cargar(true).then(function () { if (D && qs.get('p') === 'nosotros') verNos(); });
+  setInterval(function () { cargar(false); }, 120000);
+})();
+</script>
+</body>
 </html>
