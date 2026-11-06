@@ -162,9 +162,16 @@ document.addEventListener('click', function (e) {
   var CATS = [
     { id: 'sellados', nombre: 'Sellados' }, { id: 'usados', nombre: 'Usados' }, { id: 'macbook', nombre: 'MacBook' },
     { id: 'watch', nombre: 'Apple Watch' }, { id: 'airpods', nombre: 'AirPods' }, { id: 'ipad', nombre: 'iPad' }, { id: 'consolas', nombre: 'Consolas' }];
-  var MODELOS = ['11', '11 Pro', '11 Pro Max', '12', '12 mini', '12 Pro', '12 Pro Max', '13', '13 mini', '13 Pro', '13 Pro Max', '14', '14 Plus', '14 Pro', '14 Pro Max',
-    '15', '15 Plus', '15 Pro', '15 Pro Max', '16', '16 Plus', '16 Pro', '16 Pro Max', '17', '17 Pro', '17 Pro Max'];
-  var GBS = ['64 GB', '128 GB', '256 GB', '512 GB', '1 TB'];
+  // Qué iPhone tomamos en canje y con qué memorias (definido por Nico).
+  var CANJE = [
+    ['11', ['128', '256']], ['11 Pro', ['128', '256', '512']], ['11 Pro Max', ['128', '256', '512']],
+    ['12', ['128', '256']], ['12 Pro', ['128', '256', '512']], ['12 Pro Max', ['128', '256', '512']],
+    ['13', ['128', '256', '512']], ['13 Pro', ['128', '256', '512', '1TB']], ['13 Pro Max', ['128', '256', '512', '1TB']],
+    ['14', ['128', '256', '512']], ['14 Plus', ['128', '256', '512']], ['14 Pro', ['128', '256', '512', '1TB']], ['14 Pro Max', ['128', '256', '512', '1TB']],
+    ['15', ['128', '256', '512']], ['15 Plus', ['128', '256', '512']], ['15 Pro', ['128', '256', '512', '1TB']], ['15 Pro Max', ['256', '512', '1TB']],
+    ['16', ['128', '256', '512']], ['16 Plus', ['128', '256', '512']], ['16 Pro', ['128', '256', '512', '1TB']], ['16 Pro Max', ['256', '512', '1TB']],
+    ['17', ['256', '512']], ['17 Pro', ['256', '512', '1TB']], ['17 Pro Max', ['256', '512', '1TB', '2TB']]];
+  var gbTxt = function (g) { return /TB/.test(g) ? g.replace('TB', ' TB') : g + ' GB'; };
   var NOTAS = {
     sellados: ['Equipos nuevos', '1 año de garantía Apple oficial', 'Cargador, funda y templado de regalo 🎁'],
     usados: ['Equipos usados premium', 'Garantía de por vida certificada', 'Cargador, cable, funda y templado de regalo 🎁'],
@@ -303,8 +310,8 @@ document.addEventListener('click', function (e) {
     var opt = function (a, ph) { return '<option value="">' + ph + '</option>' + a.map(function (v) { return '<option>' + v + '</option>'; }).join(''); };
     document.getElementById('app').innerHTML = '<div class="nos"><button class="btn out" id="volver" style="width:auto;padding:0 16px;height:40px;margin-top:14px">← Volver al stock</button>' +
       '<h2>Cotizá tu canje</h2><p>Contanos qué equipo tenés y te decimos cuánto te lo tomamos.</p>' +
-      '<div class="fld"><label>Tu iPhone</label><select id="cModelo">' + opt(MODELOS, 'Elegí el modelo') + '</select></div>' +
-      '<div class="fld"><label>Memoria</label><select id="cGb">' + opt(GBS, 'Elegí la memoria') + '</select></div>' +
+      '<div class="fld"><label>Tu iPhone</label><select id="cModelo">' + opt(CANJE.map(function (c) { return c[0]; }), 'Elegí el modelo') + '</select></div>' +
+      '<div class="fld"><label>Memoria</label><select id="cGb" disabled><option value="">Primero elegí el modelo</option></select></div>' +
       '<div class="fld"><label>Batería</label><input id="cBat" inputmode="numeric" placeholder="Ej: 87 (salud de la batería en %)"></div>' +
       '<div class="fld"><label>¿Tiene detalles?</label><div class="opt"><label id="dNo" class="on"><input type="radio" name="det" value="no" checked style="display:none">No, está impecable</label><label id="dSi"><input type="radio" name="det" value="si" style="display:none">Sí, tiene detalles</label></div></div>' +
       '<div class="fld" id="fDet" style="display:none"><label>¿Qué detalles tiene?</label><textarea id="cDet" placeholder="Ej: rayón en la pantalla, marca en el borde…"></textarea></div>' +
@@ -315,6 +322,11 @@ document.addEventListener('click', function (e) {
     var det = 'no';
     var pick = function (v) { det = v; g('dNo').classList.toggle('on', v === 'no'); g('dSi').classList.toggle('on', v === 'si'); g('fDet').style.display = v === 'si' ? '' : 'none'; };
     g('dNo').onclick = function () { pick('no'); }; g('dSi').onclick = function () { pick('si'); };
+    g('cModelo').onchange = function () {
+      var c = CANJE.filter(function (x) { return x[0] === g('cModelo').value; })[0];
+      g('cGb').disabled = !c;
+      g('cGb').innerHTML = c ? opt(c[1].map(gbTxt), 'Elegí la memoria') : '<option value="">Primero elegí el modelo</option>';
+    };
     g('cWa').onclick = function (e) {
       var m = g('cModelo').value, gb = g('cGb').value, bat = g('cBat').value.trim(), q = g('cQuiero').value.trim(), d = g('cDet').value.trim();
       if (!m || !gb) { e.preventDefault(); alert('Elegí el modelo y la memoria de tu iPhone.'); return; }
