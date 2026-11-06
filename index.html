@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ONYX · iPhone Rosario</title>
+  <meta name="description" content="ONYX iPhone Rosario: iPhone nuevos y usados premium, MacBook, iPad, Apple Watch y AirPods. Stock en tiempo real, precios en dólares y pesos, cuotas con tarjeta.">
+  <style>
+    body { margin:0; background:#0a0a0a; color:#f2f1ec; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; box-sizing:border-box; }
+    .marca b { display:block; font-size:26px; letter-spacing:10px; font-weight:500; }
+    .marca span { font-size:11px; letter-spacing:2px; color:#8f8d86; }
+    .msg { margin-top:18px; color:#8f8d86; font-size:14px; }
+    .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:#25D366; margin-right:6px; animation:p 1s infinite alternate; }
+    @keyframes p { to { opacity:.2 } }
+    a { color:#f2f1ec; }
+    .btn { display:inline-block; margin:8px 6px 0; padding:10px 16px; border-radius:10px; background:#f2f1ec; color:#0a0a0a; text-decoration:none; font-weight:600; }
+    .btn.wa { background:#25D366; color:#06301a; }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div class="marca"><b>ONYX</b><span>IPHONE ROSARIO</span></div>
+    <div class="msg" id="msg"><span class="dot"></span>Cargando el stock…</div>
+    </div>
+  <script>
+    (async function () {
+      var API = 'https://script.google.com/macros/s/AKfycbzLbCzyHHSR6wIEAGpDNRX6TwDiBs9YXFqJlwxoyMUe-HijnMV-677IX8ZbM7CS5ho/exec';
+      var q = location.search ? location.search.slice(1) + '&' : '';
+      try {
+        var r = await fetch(API + '?' + q + 'api=pagina&t=' + Date.now());
+        var h = await r.text();
+        if (!/<html/i.test(h)) throw new Error('respuesta inválida');
+        var doc = new DOMParser().parseFromString(h, 'text/html');
+        document.replaceChild(document.adoptNode(doc.documentElement), document.documentElement);
+        document.querySelectorAll('script').forEach(function (o) {
+          var s = document.createElement('script');
+          s.textContent = '(function(){\n' + o.textContent + '\n})();';
+          o.replaceWith(s);
+        });
+      } catch (err) {
+        document.getElementById('msg').innerHTML = 'No pudimos cargar el stock en este momento.<br>' +
+          '<a class="btn" href="javascript:location.reload()">Reintentar</a>' +
+          '<a class="btn wa" href="https://wa.me/5493416832874?text=' + encodeURIComponent('Hola! Vengo de la web de ONYX.') + '">Escribinos por WhatsApp</a>';
+      }
+    })();
+  </script>
+  </body>
+</html>
