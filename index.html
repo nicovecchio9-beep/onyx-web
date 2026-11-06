@@ -28,6 +28,21 @@ document.addEventListener('click', function (e) {
   .wrap { max-width:560px; margin:0 auto; padding:0 20px 150px; }
   header { display:flex; align-items:center; justify-content:space-between; padding:18px 0 0; }
   header img { width:48px; height:48px; border-radius:12px; display:block; }
+  .marca { display:flex; align-items:center; gap:10px; }
+  .marca div { display:flex; flex-direction:column; line-height:1.05; }
+  .marca b { font-size:15px; font-weight:900; letter-spacing:4px; }
+  .marca span { font-size:11px; color:var(--mut); }
+  h1 { font-size:40px; }
+  .fld { display:flex; flex-direction:column; gap:6px; margin-top:14px; }
+  .fld label { font-size:11px; font-weight:700; letter-spacing:1.5px; color:var(--mut); text-transform:uppercase; }
+  .fld select, .fld input, .fld textarea { font:inherit; font-size:15px; padding:12px 14px; border:1px solid #ddd; border-radius:12px; background:#fff; color:var(--ink); width:100%; }
+  .fld textarea { min-height:80px; resize:vertical; }
+  .opt { display:flex; gap:8px; }
+  .opt label { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; height:46px; border:1px solid #ddd; border-radius:12px; font-size:14px; font-weight:600; text-transform:none; letter-spacing:0; color:var(--ink); cursor:pointer; }
+  .opt input { width:auto; }
+  .opt label.on { border-color:var(--ink); background:var(--ink); color:#fff; }
+  .tj { display:inline-flex; align-items:center; gap:6px; }
+  .tj i { width:22px; height:14px; border-radius:3px; display:inline-block; }
   .live { font-size:11px; font-weight:600; color:var(--ok); display:flex; align-items:center; gap:6px; }
   .live i { width:8px; height:8px; border-radius:50%; background:var(--ok); display:inline-block; animation:p 1.2s infinite alternate; }
   @keyframes p { to { opacity:.25 } }
@@ -104,7 +119,7 @@ document.addEventListener('click', function (e) {
 <body>
 <div class="wrap">
   <header>
-    <a href="./"><img id="logo" alt="ONYX iPhone Rosario"></a>
+    <a href="./" class="marca"><img id="logo" alt=""><div><b>ONYX</b><span>iPhone</span><span>Rosario</span></div></a>
     <span class="live" id="live"><i></i>Precios al día</span>
   </header>
   <div id="app"><div class="load">Cargando el stock…</div></div>
@@ -145,8 +160,11 @@ document.addEventListener('click', function (e) {
 
   document.getElementById('logo').src = LOGO;
   var CATS = [
-    { id: 'usados', nombre: 'Usados' }, { id: 'sellados', nombre: 'Sellados' }, { id: 'macbook', nombre: 'MacBook' },
-    { id: 'watch', nombre: 'Watch' }, { id: 'airpods', nombre: 'AirPods' }, { id: 'ipad', nombre: 'iPad' }, { id: 'consolas', nombre: 'Consolas' }];
+    { id: 'sellados', nombre: 'Sellados' }, { id: 'usados', nombre: 'Usados' }, { id: 'macbook', nombre: 'MacBook' },
+    { id: 'watch', nombre: 'Apple Watch' }, { id: 'airpods', nombre: 'AirPods' }, { id: 'ipad', nombre: 'iPad' }, { id: 'consolas', nombre: 'Consolas' }];
+  var MODELOS = ['11', '11 Pro', '11 Pro Max', '12', '12 mini', '12 Pro', '12 Pro Max', '13', '13 mini', '13 Pro', '13 Pro Max', '14', '14 Plus', '14 Pro', '14 Pro Max',
+    '15', '15 Plus', '15 Pro', '15 Pro Max', '16', '16 Plus', '16 Pro', '16 Pro Max', '17', '17 Pro', '17 Pro Max'];
+  var GBS = ['64 GB', '128 GB', '256 GB', '512 GB', '1 TB'];
   var NOTAS = {
     sellados: ['Equipos nuevos', '1 año de garantía Apple oficial', 'Cargador, funda y templado de regalo 🎁'],
     usados: ['Equipos usados premium', 'Garantía de por vida certificada', 'Cargador, cable, funda y templado de regalo 🎁'],
@@ -161,7 +179,7 @@ document.addEventListener('click', function (e) {
     'sierra blue': '#a7c1d9', 'pacific blue': '#2e4a5f', 'blue titanium': '#3f4a58', 'deep blue': '#26334d', 'blue': '#4b7fb8', 'sky blue': '#bcd5e6', 'mist blue': '#b7c7d8',
     'ultramarine': '#6474d6', 'glacier': '#d8e4ea', 'lavender': '#cbb8e2', 'lavander': '#cbb8e2', 'purple': '#b9a6d3', 'deep purple': '#56475c' };
 
-  var D = null, cat = 'usados', linea = '';
+  var D = null, cat = 'sellados', linea = '';
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var fmt = function (n) { return Number(n).toLocaleString('es-AR'); };
   var pesos = function (n) { return Math.ceil(n * D.dolar / REDONDEO) * REDONDEO; };
@@ -214,7 +232,7 @@ document.addEventListener('click', function (e) {
     if (!vis.some(function (c) { return c.id === cat; }) && vis.length) cat = vis[0].id;
     var items = delCat(cat).filter(function (x) { return !linea || x.linea === linea; });
     var lineas = cat === 'usados' ? Array.from(new Set(delCat('usados').map(function (x) { return x.linea; }).filter(Boolean))).sort(function (a, b) { return a - b; }) : [];
-    var h = '<h1>Lista de<br>precios.</h1><p class="sub">Sin vueltas. Lo que ves es lo que hay en stock ahora.</p>' +
+    var h = '<h1>Lista de precios</h1>' +
       '<nav class="tabs">' + vis.map(function (c) { return '<button class="tab' + (c.id === cat ? ' on' : '') + '" data-c="' + c.id + '">' + c.nombre + '</button>'; }).join('') + '</nav>';
     if (cat === 'usados') h += '<button class="seguro" id="seguro"><span><small>COMPRÁ SEGURO</small><b>Garantía de por vida certificada</b><span>Único sitio en Argentina. Tocá para ver qué cubre.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></button>';
     h += '<div class="nota">' + (NOTAS[cat] || []).map(function (t) { return '<span>' + t + '</span>'; }).join('') + '</div>';
@@ -225,9 +243,11 @@ document.addEventListener('click', function (e) {
       var stock = items.filter(function (x) { return !x.encargue; }), enc = items.filter(function (x) { return x.encargue; });
       h += enc.length ? (stock.length ? '<div class="sec">Stock · entrega inmediata</div>' + stock.map(fila).join('') : '') + '<div class="sec">Por encargue</div>' + enc.map(fila).join('') : '<div class="sec">Stock</div>' + items.map(fila).join('');
     }
-    h += '<div class="igual"><b>Igualamos cualquier oferta.</b><p>Si lo viste más barato, mostranos y te lo igualamos.</p><small>* Siempre que cumpla con las mismas condiciones de venta: mismo modelo, estado, batería, garantía y forma de pago.</small></div>';
+    h += '<div class="igual"><b>Igualamos cualquier oferta.</b><p>Si lo viste más barato, mostranos y te lo igualamos.</p><small>* Siempre que cumpla con las mismas condiciones de venta: mismo modelo, estado, batería, garantía y forma de pago.</small></div>' +
+      '<button class="igual" id="canje" style="width:100%;text-align:left;margin-top:10px;background:var(--ink);color:#fff"><b>¿Tenés un canje?</b><p style="color:#bbb">Cotizalo con nosotros: tocá acá y contanos qué equipo tenés.</p></button>';
     var app = document.getElementById('app');
     app.innerHTML = h;
+    document.getElementById('canje').onclick = verCanje;
     app.querySelectorAll('.tab').forEach(function (b) { b.onclick = function () { cat = b.dataset.c; linea = ''; pintar(); }; });
     app.querySelectorAll('.chip').forEach(function (b) { b.onclick = function () { linea = b.dataset.l; pintar(); }; });
     app.querySelectorAll('.it').forEach(function (b) { b.onclick = function () { abrirItem(b.dataset.id); }; });
@@ -247,10 +267,10 @@ document.addEventListener('click', function (e) {
     var h = '<h3>' + esc(titulo(x).replace(/ de batería$/, '')) + '</h3>';
     if (x.foto) h += '<img class="foto" src="' + esc(x.foto) + '" alt="">';
     if (x.usd) {
-      h += '<div class="card" style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:24px;font-weight:900">US$ ' + fmt(x.usd) + '</b>' + (D.dolar ? '<span>$ ' + fmt(pesos(x.usd)) + ' en pesos</span>' : '') + '</div>';
+      h += '<div class="card" style="display:flex;justify-content:space-between;align-items:baseline"><span><b style="font-size:24px;font-weight:900">US$ ' + fmt(x.usd) + '</b><br><span style="color:#777">en efectivo</span></span>' + (D.dolar ? '<span style="text-align:right"><b style="font-size:16px;font-weight:800">$ ' + fmt(pesos(x.usd)) + '</b><br><span style="color:#777">efectivo o transferencia</span></span>' : '') + '</div>';
       if (hayCuotas()) {
         var base = pesos(x.usd);
-        h += '<div class="card"><b class="t">FINANCIACIÓN CON TARJETA DE CRÉDITO</b><div class="tjs"><span>VISA</span><span>MASTERCARD</span><span>AMEX</span></div>' +
+        h += '<div class="card"><b class="t">FINANCIACIÓN CON TARJETA DE CRÉDITO</b><div class="tjs" style="flex-wrap:wrap"><span class="tj"><i style="background:#1A1F71"></i>Visa</span><span class="tj"><i style="background:linear-gradient(90deg,#EB001B 50%,#F79E1B 50%)"></i>Mastercard</span><span class="tj"><i style="background:#2E77BC"></i>American Express</span><span class="tj"><i style="background:#FE5000"></i>Naranja</span></div>' +
           planes().map(function (n) { var c = Math.ceil(base * (1 + Number(D.cuotas[n]) / 100) / n / 100) * 100; return '<div class="cuota"><span>' + n + ' cuotas de</span><b>$ ' + fmt(c) + '</b></div>'; }).join('') + '</div>';
       }
       h += '<a class="btn wa" target="_blank" rel="noopener" href="' + waLink(mensaje(x)) + '">Pedir por WhatsApp</a>';
@@ -275,9 +295,38 @@ document.addEventListener('click', function (e) {
       '<ul><li>Equipos nuevos con 1 año de garantía Apple oficial.</li><li>Usados premium con garantía de por vida certificada.</li><li>Los iPhone incluyen funda, cargador y templado de regalo.</li><li>Pagás en efectivo en dólares o pesos, o con tarjeta de crédito en cuotas.</li></ul>' +
       '<p>Nuestra oficina está en Puerto Norte, Av. Carballo 186, Rosario.</p></div>';
     document.getElementById('volver').onclick = function () { pintar(); window.scrollTo(0, 0); };
+    document.getElementById('fix').style.display = 'none';
     window.scrollTo(0, 0);
   }
   document.getElementById('nosLink').onclick = function (e) { e.preventDefault(); verNos(); };
+  function verCanje() {
+    var opt = function (a, ph) { return '<option value="">' + ph + '</option>' + a.map(function (v) { return '<option>' + v + '</option>'; }).join(''); };
+    document.getElementById('app').innerHTML = '<div class="nos"><button class="btn out" id="volver" style="width:auto;padding:0 16px;height:40px;margin-top:14px">← Volver al stock</button>' +
+      '<h2>Cotizá tu canje</h2><p>Contanos qué equipo tenés y te decimos cuánto te lo tomamos.</p>' +
+      '<div class="fld"><label>Tu iPhone</label><select id="cModelo">' + opt(MODELOS, 'Elegí el modelo') + '</select></div>' +
+      '<div class="fld"><label>Memoria</label><select id="cGb">' + opt(GBS, 'Elegí la memoria') + '</select></div>' +
+      '<div class="fld"><label>Batería</label><input id="cBat" inputmode="numeric" placeholder="Ej: 87 (salud de la batería en %)"></div>' +
+      '<div class="fld"><label>¿Tiene detalles?</label><div class="opt"><label id="dNo" class="on"><input type="radio" name="det" value="no" checked style="display:none">No, está impecable</label><label id="dSi"><input type="radio" name="det" value="si" style="display:none">Sí, tiene detalles</label></div></div>' +
+      '<div class="fld" id="fDet" style="display:none"><label>¿Qué detalles tiene?</label><textarea id="cDet" placeholder="Ej: rayón en la pantalla, marca en el borde…"></textarea></div>' +
+      '<div class="fld"><label>¿Qué equipo te interesa?</label><input id="cQuiero" placeholder="Ej: iPhone 16 Pro 256 GB"></div>' +
+      '<a class="btn wa" id="cWa" target="_blank" rel="noopener" href="#" style="margin-top:18px">Cotizar por WhatsApp</a>' +
+      '<p style="font-size:11px;color:#999;margin-top:8px">Se abre WhatsApp con el pedido completo; vos solo lo mandás.</p></div>';
+    var g = function (id) { return document.getElementById(id); };
+    var det = 'no';
+    var pick = function (v) { det = v; g('dNo').classList.toggle('on', v === 'no'); g('dSi').classList.toggle('on', v === 'si'); g('fDet').style.display = v === 'si' ? '' : 'none'; };
+    g('dNo').onclick = function () { pick('no'); }; g('dSi').onclick = function () { pick('si'); };
+    g('cWa').onclick = function (e) {
+      var m = g('cModelo').value, gb = g('cGb').value, bat = g('cBat').value.trim(), q = g('cQuiero').value.trim(), d = g('cDet').value.trim();
+      if (!m || !gb) { e.preventDefault(); alert('Elegí el modelo y la memoria de tu iPhone.'); return; }
+      var t = 'Hola Nico, quisiera cotizar este canje.\n\n📱 Mi equipo: iPhone ' + m + ' ' + gb + (bat ? ' · batería ' + bat.replace('%', '') + '%' : '') +
+        '\n🔎 Detalles: ' + (det === 'si' ? (d || 'sí, tiene detalles') : 'no, está impecable') +
+        (q ? '\n🎯 Me interesa: ' + q : '');
+      this.href = waLink(t);
+    };
+    g('volver').onclick = function () { pintar(); window.scrollTo(0, 0); };
+    document.getElementById('fix').style.display = 'none';
+    window.scrollTo(0, 0);
+  }
   document.getElementById('waNico').href = waLink('Hola Nico, ¿cómo estás? No encontré lo que busco en la web, ¿me lo conseguís?');
 
   // ---------- Datos ----------
