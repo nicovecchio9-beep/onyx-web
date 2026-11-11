@@ -163,7 +163,7 @@ document.addEventListener('click', function (e) {
 
   document.getElementById('logo').src = LOGO;
   var CATS = [
-    { id: 'sellados', nombre: 'Sellados' }, { id: 'usados', nombre: 'Usados' }, { id: 'macbook', nombre: 'MacBook' },
+    { id: 'sellados', nombre: 'Sellados' }, { id: 'usados', nombre: 'Usados' }, { id: 'proximos', nombre: 'Próximos ingresos' }, { id: 'macbook', nombre: 'MacBook' },
     { id: 'watch', nombre: 'Apple Watch' }, { id: 'airpods', nombre: 'AirPods' }, { id: 'ipad', nombre: 'iPad' }, { id: 'consolas', nombre: 'Consolas' }];
   // Qué iPhone tomamos en canje y con qué memorias (definido por Nico).
   var CANJE = [
@@ -178,6 +178,7 @@ document.addEventListener('click', function (e) {
   var NOTAS = {
     sellados: ['Equipos nuevos', '1 año de garantía Apple oficial', 'Cargador, funda y templado de regalo 🎁'],
     usados: ['Equipos usados premium', 'Garantía de por vida certificada', 'Cargador, cable, funda y templado de regalo 🎁'],
+    proximos: ['Usados premium que están por llegar', 'Reservá el tuyo antes de que ingrese', 'Garantía de por vida certificada'],
     macbook: ['Equipos nuevos', '1 año de garantía Apple oficial'], watch: ['Equipos nuevos', '1 año de garantía Apple oficial'],
     airpods: ['Equipos nuevos', '1 año de garantía Apple oficial'], ipad: ['Equipos nuevos', '1 año de garantía Apple oficial'],
     consolas: ['Equipos nuevos', '90 días de garantía'] };
@@ -207,13 +208,15 @@ document.addEventListener('click', function (e) {
     return [x.modelo, x.detalle ? gb(x.detalle) : '', x.cat === 'sellados' ? 'sellado' : ''].filter(Boolean).join(' ');
   }
   function mensaje(x) {
+    if (x.estado === 'Ingresando') return 'Hola Nico, ¿cómo estás? Quisiera reservar el ' + titulo(x) + ' que está por ingresar' + (x.usd ? ' (US$ ' + fmt(x.usd) + ').' : '.');
     if (!x.usd) return 'Hola Nico, ¿cómo estás? Quisiera consultar el precio del ' + titulo(x) + (x.colores ? ' (' + x.colores + ')' : '') + '.';
     return 'Hola Nico, ¿cómo estás? Quisiera comprar el ' + titulo(x) + ' (US$ ' + fmt(x.usd) + ').' + (x.cat !== 'usados' && x.colores ? ' Colores: ' + x.colores + '.' : '');
   }
   function planes() { return Object.keys(D.cuotas || {}).map(Number).filter(function (n) { return n > 0; }).sort(function (a, b) { return a - b; }); }
   function hayCuotas() { return D.dolar && planes().length > 0; }
   function delCat(c) {
-    return D.items.filter(function (x) { return x.cat === c; }).sort(function (a, b) { return a.orden - b.orden || (parseFloat(a.gb) || 0) - (parseFloat(b.gb) || 0) || a.usd - b.usd; });
+    var ing = function (x) { return x.cat === 'usados' && x.estado === 'Ingresando'; };
+    return D.items.filter(function (x) { return c === 'proximos' ? ing(x) : x.cat === c && !ing(x); }).sort(function (a, b) { return a.orden - b.orden || (parseFloat(a.gb) || 0) - (parseFloat(b.gb) || 0) || a.usd - b.usd; });
   }
   function nombre(x) {
     var m = String(x.modelo).replace(/^iphone\s*/i, '');
@@ -244,10 +247,11 @@ document.addEventListener('click', function (e) {
     var lineas = cat === 'usados' ? Array.from(new Set(delCat('usados').map(function (x) { return x.linea; }).filter(Boolean))).sort(function (a, b) { return a - b; }) : [];
     var h = '<h1>Lista de precios</h1>' +
       '<nav class="tabs">' + vis.map(function (c) { return '<button class="tab' + (c.id === cat ? ' on' : '') + '" data-c="' + c.id + '">' + c.nombre + '</button>'; }).join('') + '</nav>';
-    if (cat === 'usados') h += '<button class="seguro" id="seguro"><span><small>COMPRÁ SEGURO</small><b>Garantía de por vida certificada</b><span>Único sitio en Argentina. Tocá para ver qué cubre.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></button>';
+    if (cat === 'usados' || cat === 'proximos') h += '<button class="seguro" id="seguro"><span><small>COMPRÁ SEGURO</small><b>Garantía de por vida certificada</b><span>Único sitio en Argentina. Tocá para ver qué cubre.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></button>';
     h += '<div class="nota">' + (NOTAS[cat] || []).map(function (t) { return '<span>' + t + '</span>'; }).join('') + '</div>';
     if (lineas.length > 1) h += '<div class="chips"><button class="chip' + (!linea ? ' on' : '') + '" data-l="">Todos</button>' + lineas.map(function (l) { return '<button class="chip' + (l === linea ? ' on' : '') + '" data-l="' + l + '">Línea ' + l + '</button>'; }).join('') + '</div>';
     if (!items.length) h += '<div class="vacio">No hay equipos en esta categoría por ahora.</div>';
+    else if (cat === 'proximos') h += '<div class="sec">Ingresan en los próximos días</div>' + items.map(fila).join('');
     else if (cat === 'usados') h += grupo(items, function (x) { return x.linea || ''; }, function (k) { return k ? 'iPhone ' + k : 'Otros'; });
     else {
       var stock = items.filter(function (x) { return !x.encargue; }), enc = items.filter(function (x) { return x.encargue; });
@@ -283,7 +287,7 @@ document.addEventListener('click', function (e) {
         h += '<div class="card"><b class="t">FINANCIACIÓN CON TARJETA DE CRÉDITO</b><div class="tjs" style="flex-wrap:wrap"><span class="tj"><i style="background:#1A1F71"></i>Visa</span><span class="tj"><i style="background:linear-gradient(90deg,#EB001B 50%,#F79E1B 50%)"></i>Mastercard</span><span class="tj"><i style="background:#2E77BC"></i>American Express</span><span class="tj"><i style="background:#FE5000"></i>Naranja</span></div>' +
           planes().map(function (n) { var c = Math.ceil(base * (1 + Number(D.cuotas[n]) / 100) / n / 100) * 100; return '<div class="cuota"><span>' + n + ' cuotas de</span><b>$ ' + fmt(c) + '</b></div>'; }).join('') + '</div>';
       }
-      h += '<a class="btn wa" target="_blank" rel="noopener" href="' + waLink(mensaje(x)) + '">Pedir por WhatsApp</a>';
+      h += '<a class="btn wa" target="_blank" rel="noopener" href="' + waLink(mensaje(x)) + '">' + (x.estado === 'Ingresando' ? 'Reservar por WhatsApp' : 'Pedir por WhatsApp') + '</a>';
     } else {
       h += '<a class="btn wa" target="_blank" rel="noopener" href="' + waLink(mensaje(x)) + '">Consultar precio por WhatsApp</a>';
     }
